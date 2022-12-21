@@ -1,4 +1,4 @@
-![C/C++ CI](https://github.com/orlarey/HashConsing/workflows/C/C++%20CI/badge.svg)
+![C/C++ CI](https://github.com/orlarey/hashpointer/workflows/C/C++%20CI/badge.svg)
 
 # Hash Consing in C++
 ## Principle

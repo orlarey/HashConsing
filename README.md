@@ -23,7 +23,7 @@ In other words, the hash table will always return the same pointer for the same 
 
 Just copy the header file `HashConsing.hh` into your project, it has no dependencies other than the STL. Please note that it requires C++20 because it uses concepts.
 
-Everything is encapsulated in the namespace `HashConsing`. It contains the class template `HashTable<T>` whose main operation is `operator()(const T&) -> T const*`. If the content `T` has never be seen before, an internal copy is first made. Then a pointer to the internal copy is returned. It has an additional `report()` method used to print statistics about the hash table, in particular the number of collisions. 
+Everything is encapsulated in the namespace `HashConsing`. It contains the class template `HashTable<T>` whose main operation is `operator()(const T&) -> T const*`. If the content `T` has never been seen before, an internal copy is first made. Then a pointer to the internal copy is returned. It has an additional `report()` method used to print statistics about the hash table, in particular the number of collisions. 
 
 The namespace contains two additional classes, a default hash function  `HashConsing::DefaultHashFunction<T>`, and a default equality function `HashConsing::DefaultEquality<T>` so that the user doesn't have to provide them in many cases.
 

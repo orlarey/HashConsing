@@ -265,6 +265,75 @@ void speedtest7(int N)
     H.report();
 }
 
+/**
+ * @brief Create and retrieve N*N hash consed pairs (i,j) and check that they are the same.
+ * Here intervals are pairs instead of structs.
+ */
+void speedtest8(int N)
+{
+    // HashTable<std::tuple<int, int>, MyHash<std::tuple<int, int>>> H;
+    HashConsing::HashTable<std::pair<int, int>> H;
+
+    auto t1 = std::chrono::system_clock::now();
+    // creating
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            /*const auto* itv = */ H({i, j});
+        }
+    }
+    auto t2 = std::chrono::system_clock::now();
+    // retrieving
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            const auto* p = H({i, j});
+            const auto* q = H({j, i});
+            assert(p->first == i && p->second == j);
+            if (i != j) assert(p != q);
+        }
+    }
+    auto t3 = std::chrono::system_clock::now();
+    auto d1 = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    auto d2 = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2);
+
+    std::cout << "\nPair     - Creation : " << d1.count() << "ms; Retrieving : " << d2.count() << "ms" << std::endl;
+    H.report();
+}
+
+/**
+ * @brief Create and retrieve N*N hash consed pairs (i*j,set{i,j}) and check that they are the same.
+ */
+void speedtest9(int N)
+{
+    // HashTable<std::tuple<int, int>, MyHash<std::tuple<int, int>>> H;
+    HashConsing::HashTable<std::pair<int, std::set<int>>> H;
+
+    auto t1 = std::chrono::system_clock::now();
+    // creating
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            const auto* p = H({i * j, {i, j}});
+            const auto* q = H({j * i, {j, i}});
+            assert(p == q);
+        }
+    }
+    auto t2 = std::chrono::system_clock::now();
+    // retrieving
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            const auto* p = H({i * j, {i, j}});
+            assert(p->first == (i * j));
+            std::set<int> s{i, j};
+            assert(s == p->second);
+        }
+    }
+    auto t3 = std::chrono::system_clock::now();
+    auto d1 = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    auto d2 = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2);
+
+    std::cout << "\nPairSet  - Creation : " << d1.count() << "ms; Retrieving : " << d2.count() << "ms" << std::endl;
+    H.report();
+}
+
 auto main() -> int
 {
     int N = 1000;
@@ -275,6 +344,8 @@ auto main() -> int
     speedtest5(N);
     speedtest6(N);
     speedtest7(N);
+    speedtest8(N);
+    speedtest9(N);
     std::cout << "OK" << std::endl;
     return 0;
 }

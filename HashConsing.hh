@@ -87,7 +87,7 @@ struct DefaultHashFunction<std::set<T>> {
     {
         std::size_t seed = 0;
         for (auto& e : s) {
-            seed = combine(seed, std::hash<T>{}(e));
+            seed = combine(seed, DefaultHashFunction<T>{}(e));
         }
         return seed;
     }
@@ -101,8 +101,20 @@ struct DefaultHashFunction<std::vector<T>> {
     {
         std::size_t seed = 0;
         for (auto& e : s) {
-            seed = combine(seed, std::hash<T>{}(e));
+            seed = combine(seed, DefaultHashFunction<T>{}(e));
         }
+        return seed;
+    }
+};
+
+template <typename T1, typename T2>
+struct DefaultHashFunction<std::pair<T1, T2>> {
+    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
+
+    std::size_t operator()(std::pair<T1, T2> const& s) const noexcept
+    {
+        std::size_t seed = DefaultHashFunction<T1>{}(s.first);
+        seed             = combine(seed, DefaultHashFunction<T2>{}(s.second));
         return seed;
     }
 };

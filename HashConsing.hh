@@ -13,10 +13,21 @@
  * limitations under the License.
  */
 
+#include <cassert>
+#include <chrono>
 #include <concepts>
 #include <cstdlib>
+#include <functional>
+#include <iostream>
+#include <map>
 #include <memory>
+#include <set>
+#include <sstream>
+#include <string>
+#include <tuple>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace HashConsing
 {

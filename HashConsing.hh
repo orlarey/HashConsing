@@ -68,6 +68,34 @@ struct DefaultHashFunction {
     }
 };
 
+template <typename T>
+struct DefaultHashFunction<std::set<T>> {
+    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
+
+    std::size_t operator()(std::set<T> const& s) const noexcept
+    {
+        std::size_t seed = 0;
+        for (auto& e : s) {
+            seed = combine(seed, std::hash<T>{}(e));
+        }
+        return seed;
+    }
+};
+
+template <typename T>
+struct DefaultHashFunction<std::vector<T>> {
+    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
+
+    std::size_t operator()(std::vector<T> const& s) const noexcept
+    {
+        std::size_t seed = 0;
+        for (auto& e : s) {
+            seed = combine(seed, std::hash<T>{}(e));
+        }
+        return seed;
+    }
+};
+
 /**
  * @brief If T has a == and != operator, use it, otherwise provides a default equality function that only work
  * for flat structures, i.e. structures that can be represented as an array of integers.

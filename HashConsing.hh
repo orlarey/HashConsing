@@ -121,7 +121,6 @@ class HashTable
                   << ", load factor " << fHashTable.load_factor() << ", bucket count " << fHashTable.bucket_count()
                   << ", collisions " << collisions << ", empty buckets " << empty << '\n';
         // distribution :
-        float s = fHashTable.size();
         for (auto [n, c] : distribution) {
             std::cout << '(' << n << '=' << c << ") ";
         }

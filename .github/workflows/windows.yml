@@ -20,5 +20,5 @@ jobs:
     - name: build cmake project
       run: cmake --build build --config Debug
     - name: execute test
-      run: ./build/Release/test.exe
+      run: ./build/Debug/test.exe
 

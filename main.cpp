@@ -25,7 +25,8 @@
 #include <utility>
 #include <vector>
 
-#include "HashConsing.hh"
+#include "HashFunction.hh"
+#include "HashTable.hh"
 
 struct Interval1 {
     int lo;

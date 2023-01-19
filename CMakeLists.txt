@@ -19,8 +19,9 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
+include_directories(HashConsing)
 
 # add the executable
-add_executable(test main.cpp HashConsing.hh)
+add_executable(test main.cpp HashConsing/HashFunction.hh HashConsing/HashTable.hh)
 
 

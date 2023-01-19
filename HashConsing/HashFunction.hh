@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#pragma once
+
 #include <cassert>
 #include <chrono>
 #include <concepts>
@@ -56,7 +58,7 @@ concept hasEqualOperator = requires(T a, T b) {
  * for flat structures, i.e. structures that can be represented as an array of integers.
  */
 template <typename T, typename R = unsigned int>
-struct DefaultHashFunction {
+struct HashFunction {
     static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
 
     std::size_t operator()(T const& s) const noexcept
@@ -80,41 +82,41 @@ struct DefaultHashFunction {
 };
 
 template <typename T>
-struct DefaultHashFunction<std::set<T>> {
+struct HashFunction<std::set<T>> {
     static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
 
     std::size_t operator()(std::set<T> const& s) const noexcept
     {
         std::size_t seed = 0;
         for (auto& e : s) {
-            seed = combine(seed, DefaultHashFunction<T>{}(e));
+            seed = combine(seed, HashFunction<T>{}(e));
         }
         return seed;
     }
 };
 
 template <typename T>
-struct DefaultHashFunction<std::vector<T>> {
+struct HashFunction<std::vector<T>> {
     static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
 
     std::size_t operator()(std::vector<T> const& s) const noexcept
     {
         std::size_t seed = 0;
         for (auto& e : s) {
-            seed = combine(seed, DefaultHashFunction<T>{}(e));
+            seed = combine(seed, HashFunction<T>{}(e));
         }
         return seed;
     }
 };
 
 template <typename T1, typename T2>
-struct DefaultHashFunction<std::pair<T1, T2>> {
+struct HashFunction<std::pair<T1, T2>> {
     static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
 
     std::size_t operator()(std::pair<T1, T2> const& s) const noexcept
     {
-        std::size_t seed = DefaultHashFunction<T1>{}(s.first);
-        seed             = combine(seed, DefaultHashFunction<T2>{}(s.second));
+        std::size_t seed = HashFunction<T1>{}(s.first);
+        seed             = combine(seed, HashFunction<T2>{}(s.second));
         return seed;
     }
 };
@@ -124,7 +126,7 @@ struct DefaultHashFunction<std::pair<T1, T2>> {
  * for flat structures, i.e. structures that can be represented as an array of integers.
  */
 template <typename T, typename R = unsigned int>
-struct DefaultEquality {
+struct Equality {
     bool operator()(const T& x, const T& y) const noexcept
     {
         if constexpr (hasEqualOperator<T>) {
@@ -139,58 +141,6 @@ struct DefaultEquality {
             }
             return true;
         }
-    }
-};
-
-/**
- * HashTable<T> : T -> T const *
- */
-template <typename T, typename Hash = DefaultHashFunction<T>, typename Equal = DefaultEquality<T>>
-class HashTable
-{
-    /**
-     * The internal hash table
-     */
-    std::unordered_map<T, std::unique_ptr<T>, Hash, Equal> fHashTable;
-
-   public:
-    /**
-     * The hash consing operator: T -> T const *
-     */
-    auto operator()(const T& i) -> T const*
-    {
-        auto p = fHashTable.find(i);
-        if (p != fHashTable.end()) {
-            return p->second.get();
-        }
-        fHashTable.insert({i, std::make_unique<T>(i)});
-        auto q = fHashTable.find(i);
-        return q->second.get();
-    }
-
-    /**
-     * Reports collision and other information on the internal hash table. Useful for debugging and evaluation of the
-     * hash function
-     */
-    void report()
-    {
-        std::map<unsigned int, unsigned int> distribution;
-        size_t                               collisions = 0, empty = 0;
-        for (auto bucket = fHashTable.bucket_count(); bucket--;) {
-            distribution[fHashTable.bucket_size(bucket)] += 1;
-            if (fHashTable.bucket_size(bucket) == 0)
-                empty++;
-            else
-                collisions += fHashTable.bucket_size(bucket) - 1;
-        }
-        std::cout << "size " << fHashTable.size() << ", max load factor " << fHashTable.max_load_factor()
-                  << ", load factor " << fHashTable.load_factor() << ", bucket count " << fHashTable.bucket_count()
-                  << ", collisions " << collisions << ", empty buckets " << empty << '\n';
-        // distribution :
-        for (auto [n, c] : distribution) {
-            std::cout << '(' << n << '=' << c << ") ";
-        }
-        std::cout << std::endl;
     }
 };
 

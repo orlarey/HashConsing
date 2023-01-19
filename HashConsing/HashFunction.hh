@@ -34,6 +34,11 @@
 namespace HashConsing
 {
 
+static std::size_t combine(std::size_t x, std::size_t y)
+{
+    return (x > y) ? x * x + x + y : x + y * y;
+}
+
 // Check if T has a std::hash<T>{}(a) function
 template <typename T>
 concept hasHashFunction = requires(T a) {
@@ -59,8 +64,6 @@ concept hasEqualOperator = requires(T a, T b) {
  */
 template <typename T, typename R = unsigned int>
 struct HashFunction {
-    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
-
     std::size_t operator()(T const& s) const noexcept
     {
         if constexpr (hasHashFunction<T>) {
@@ -83,8 +86,6 @@ struct HashFunction {
 
 template <typename T>
 struct HashFunction<std::set<T>> {
-    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
-
     std::size_t operator()(std::set<T> const& s) const noexcept
     {
         std::size_t seed = 0;
@@ -97,8 +98,6 @@ struct HashFunction<std::set<T>> {
 
 template <typename T>
 struct HashFunction<std::vector<T>> {
-    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
-
     std::size_t operator()(std::vector<T> const& s) const noexcept
     {
         std::size_t seed = 0;
@@ -111,8 +110,6 @@ struct HashFunction<std::vector<T>> {
 
 template <typename T1, typename T2>
 struct HashFunction<std::pair<T1, T2>> {
-    static std::size_t combine(std::size_t x, std::size_t y) { return (x > y) ? x * x + x + y : x + y * y; }
-
     std::size_t operator()(std::pair<T1, T2> const& s) const noexcept
     {
         std::size_t seed = HashFunction<T1>{}(s.first);

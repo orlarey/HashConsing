@@ -585,7 +585,7 @@ auto main() -> int
     speedtest4(N);
     // speedtest4k(N);
     speedtest5(N);
-    speedtest5k(N);
+    // speedtest5k(N); run on macOS CI; dont run on Ubuntu or Windows CI
     speedtest6(N);
     speedtest6k(N);
     speedtest7(N);

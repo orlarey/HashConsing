@@ -17,8 +17,9 @@ else ()
 endif()
 
 if (MSVC)
-    # warning level 4 and all warnings as errors
-    add_compile_options(/W4)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fvisibility=hidden -Wall -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
+
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fvisibility=hidden -Wall -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
 else()
     # lots of warnings and all warnings as errors
     add_compile_options(-Wall -Wextra -pedantic -Werror)

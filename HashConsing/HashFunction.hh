@@ -59,8 +59,10 @@ concept hasEqualOperator = requires(T a, T b) {
                            };
 
 /**
- * @brief If T has a hash function, use it, otherwise provides a default hash function that only work
- * for flat structures, i.e. structures that can be represented as an array of integers.
+ * @brief Sort of generic hash function. If T has an std::hash function, use it. Otherwise provides a default hash
+ * function that only work for flat structures, i.e. structures that can be represented as an array of integers, as well
+ * as hash functions for std::set<T> and const std::set<T>, std::vector<T> and const std::vector<T>, std::pair<T1, T2>
+ * and const std::pair<T1, T2>.
  */
 template <typename T, typename R = unsigned int>
 struct HashFunction {
@@ -84,6 +86,11 @@ struct HashFunction {
     }
 };
 
+/**
+ * @brief Hash function of set<T>
+ *
+ * @tparam T
+ */
 template <typename T>
 struct HashFunction<std::set<T>> {
     std::size_t operator()(std::set<T> const& s) const noexcept
@@ -96,6 +103,28 @@ struct HashFunction<std::set<T>> {
     }
 };
 
+/**
+ * @brief Hash function of const set<T>
+ *
+ * @tparam T
+ */
+template <typename T>
+struct HashFunction<const std::set<T>> {
+    std::size_t operator()(const std::set<T>& s) const noexcept
+    {
+        std::size_t seed = 0;
+        for (auto& e : s) {
+            seed = combine(seed, HashFunction<T>{}(e));
+        }
+        return seed;
+    }
+};
+
+/**
+ * @brief Hash function of vector<T>
+ *
+ * @tparam T
+ */
 template <typename T>
 struct HashFunction<std::vector<T>> {
     std::size_t operator()(std::vector<T> const& s) const noexcept
@@ -108,8 +137,46 @@ struct HashFunction<std::vector<T>> {
     }
 };
 
+/**
+ * @brief Hash function of const vector<T>
+ *
+ * @tparam T
+ */
+
+template <typename T>
+struct HashFunction<const std::vector<T>> {
+    std::size_t operator()(std::vector<T> const& s) const noexcept
+    {
+        std::size_t seed = 0;
+        for (auto& e : s) {
+            seed = combine(seed, HashFunction<T>{}(e));
+        }
+        return seed;
+    }
+};
+
+/**
+ * @brief Hash function of pair<T1,T2>
+ *
+ * @tparam T
+ */
 template <typename T1, typename T2>
 struct HashFunction<std::pair<T1, T2>> {
+    std::size_t operator()(std::pair<T1, T2> const& s) const noexcept
+    {
+        std::size_t seed = HashFunction<T1>{}(s.first);
+        seed             = combine(seed, HashFunction<T2>{}(s.second));
+        return seed;
+    }
+};
+
+/**
+ * @brief Hash function of const pair<T1,T2>
+ *
+ * @tparam T
+ */
+template <typename T1, typename T2>
+struct HashFunction<const std::pair<T1, T2>> {
     std::size_t operator()(std::pair<T1, T2> const& s) const noexcept
     {
         std::size_t seed = HashFunction<T1>{}(s.first);

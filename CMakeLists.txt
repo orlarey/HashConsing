@@ -7,9 +7,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fvisibility=hidden -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
-
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fvisibility=hidden -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
 
 if (NOTIDY)
 else ()
@@ -17,11 +14,12 @@ else ()
 endif()
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 /W4 /WX")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 /W4 /WX")
+    set(CMAKE_CXX_FLAGS_DEBUG "/O1 /W4 /WX /fsanitize=address")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /W4 /WX")
 else()
-    # lots of warnings and all warnings as errors
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fvisibility=hidden -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
+
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fvisibility=hidden -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
 endif()
 
 include_directories(HashConsing)

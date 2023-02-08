@@ -67,8 +67,8 @@ class HashTable
      */
     void report()
     {
-        std::map<unsigned int, unsigned int> distribution;
-        size_t                               collisions = 0, empty = 0;
+        std::map<size_t, size_t> distribution;
+        size_t                   collisions = 0, empty = 0;
         for (auto bucket = fHashTable.bucket_count(); bucket--;) {
             distribution[fHashTable.bucket_size(bucket)] += 1;
             if (fHashTable.bucket_size(bucket) == 0)

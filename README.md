@@ -7,7 +7,7 @@ Hash consing is a technique to avoid storing duplicate contents in memory. The i
 
 For that purpose, two header files are provided: `HashConsing/HashFunction.hh` and `HashConsing/HashTable.hh`. 
 
-The header file `HashFunction.hh` provides a rather generic hash function `HashConsing::HashFunction(const T&) -> size_t`. If `std::hash<T>` is defined, it uses it, otherwise, it provides hash functions for `std::pair`, `std::tuple`, `std::vector` as well as for flat user-defined classes and structures.
+The header file `HashFunction.hh` provides a rather generic hash function `HashConsing::HashFunction(const T&) -> size_t`. If `std::hash<T>` is defined, it uses it, otherwise, it provides hash functions for `std::pair`, `std::tuple`, and `std::vector` as well as for flat user-defined classes and structures.
 
 
 The header file `HashTable.hh` provides a generic hash table mechanism `HashConsing::HashTable<T>`, an object that transforms a content of type `T` into a pointer `T*` to that content, while keeping an internal copy of that content in a table.
@@ -34,7 +34,7 @@ The namespace contains two additional classes, a default hash function  `HashCon
 
 ## Optional template parameters
 
-The hash table can be parameterized with an optional hash function and an optional equality function: `HashConsing::HashTable<T[,H[,E]]>`. The default hash function is `HashConsing::HashFunction<T>` and the default equality function is `HashConsing::Equality<T>`. The default Hash function will call the standard `std::hash` function if it is defined for `T`, or provide a custom hash function otherwise. The default equality function will use the standard `operator==` if it is defined for `T`, or provide a custom equality function otherwise. The custom hash function and equality function will work for _flat_ structures that can be assimilated to a sequence of bytes such that `sizeof(T) == n*sizeof(int)`. For other use cases, the user must provide a specific hash function and equality function.
+The hash table can be parameterized with an optional hash function and an optional equality function: `HashConsing::HashTable<T[,H[,E]]>`. The default hash function is `HashConsing::HashFunction<T>` and the default equality function is `HashConsing::Equality<T>`. The default Hash function will call the standard `std::hash` function if it is defined for `T`, or provide a custom hash function otherwise. The default equality function will use the standard `operator==` if it is defined for `T` or provide a custom equality function otherwise. The custom hash function and equality function will work for _flat_ structures that can be assimilated to a sequence of bytes such that `sizeof(T) == n*sizeof(int)`. For other use cases, the user must provide a specific hash function and equality function.
 
 ## Memory management
 

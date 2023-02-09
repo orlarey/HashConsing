@@ -14,8 +14,8 @@ else ()
 endif()
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS_DEBUG "/Z7 /W4 /fsanitize=address")
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /W4")
+    set(CMAKE_CXX_FLAGS_DEBUG "/W4 /WX")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /W4 /WX")
 else()
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fvisibility=hidden -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow -Wconversion")
 
